@@ -32,10 +32,9 @@ def detalle_sala(request, pk):
 # ---------------------------------------
 def crear_reserva(request):
     """Vista para crear una nueva reserva"""
-    
     sala_seleccionada = None
-    
-    # Obtener sala seleccionada vía GET
+
+    # Detectar sala por GET (?sala=ID)
     sala_id = request.GET.get('sala')
     if sala_id:
         try:
@@ -43,53 +42,59 @@ def crear_reserva(request):
         except Sala.DoesNotExist:
             sala_seleccionada = None
 
-    # ---- GET: mostrar formulario ----
-    if request.method == 'GET':
-        form = ReservaForm()
-        
-        # Si viene sala pre-seleccionada, fijarla en el form
+    # -------------------------
+    #     FORM POST
+    # -------------------------
+    if request.method == 'POST':
+        form = ReservaForm(request.POST)
+
+        if form.is_valid():
+            reserva = form.save(commit=False)
+            sala = reserva.sala  # viene desde POST
+
+            # 1. Sala habilitada
+            if not sala.habilitada:
+                form.add_error('sala', "La sala no está habilitada.")
+                return render(request, 'salas/reservar.html', {
+                    'form': form,
+                    'sala_seleccionada': sala_seleccionada
+                })
+
+            # 2. Ocupada en este momento
+            if sala.reserva_activa:
+                form.add_error('sala', "La sala ya está reservada ahora mismo.")
+                return render(request, 'salas/reservar.html', {
+                    'form': form,
+                    'sala_seleccionada': sala_seleccionada
+                })
+
+            # 3. Fechas automáticas
+            ahora = timezone.now()
+            reserva.fecha_inicio = ahora
+            reserva.fecha_termino = ahora + timedelta(hours=2)
+
+            # 4. Validación completa
+            reserva.full_clean()
+
+            # 5. Guardar reserva
+            reserva.save()
+
+            messages.success(request, "Reserva creada correctamente.")
+            return redirect('salas:detalle', pk=sala.pk)
+
+        else:
+            print("❌ FORM NO VÁLIDO:", form.errors)
+
+    # -------------------------
+    #     FORM GET
+    # -------------------------
+    else:
+        initial = {}
         if sala_seleccionada:
-            form.fields['sala'].initial = sala_seleccionada.pk
-        
-        return render(request, 'salas/reservar.html', {
-            'form': form,
-            'sala_seleccionada': sala_seleccionada
-        })
+            initial['sala'] = sala_seleccionada
 
-    # ---- POST: guardar reserva ----
-    form = ReservaForm(request.POST)
+        form = ReservaForm(initial=initial)
 
-    if form.is_valid():
-        reserva = form.save(commit=False)
-        sala = reserva.sala  # sala escogida en el form
-
-        # Validaciones
-        if not sala.habilitada:
-            form.add_error('sala', "La sala no está habilitada.")
-            return render(request, 'salas/reservar.html', {
-                'form': form,
-                'sala_seleccionada': sala
-            })
-
-        if sala.reserva_activa:
-            form.add_error('sala', "La sala ya está reservada ahora mismo.")
-            return render(request, 'salas/reservar.html', {
-                'form': form,
-                'sala_seleccionada': sala
-            })
-
-        # Asignar las fechas (2 horas)
-        ahora = timezone.now()
-        reserva.fecha_inicio = ahora
-        reserva.fecha_termino = ahora + timedelta(hours=2)
-
-        reserva.full_clean()
-        reserva.save()
-
-        messages.success(request, "Reserva creada correctamente.")
-        return redirect('salas:detalle', pk=sala.pk)
-
-    # Si el form no es válido
     return render(request, 'salas/reservar.html', {
         'form': form,
         'sala_seleccionada': sala_seleccionada

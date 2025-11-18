@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<style>
+    .page-header {
+        text-align: center;
+        color: white;
+        margin-bottom: 3rem;
+    }
+
+    .page-header h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .page-header p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+    }
+
+    .salas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .sala-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .sala-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .sala-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .sala-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 60px 0 rgba(31, 38, 135, 0.5);
+    }
+
+    .sala-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+        color: white;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .sala-card h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 1rem;
+    }
+
+    .sala-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #4a5568;
+        font-size: 0.95rem;
+    }
+
+    .info-item i {
+        color: #667eea;
+        font-size: 1.1rem;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .status-disponible {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+    }
+
+    .status-reservada {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+    }
+
+    .btn-reservar {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 12px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px 0 rgba(102, 126, 234, 0.4);
+        text-decoration: none;
+        display: block;
+        text-align: center;
+    }
+
+    .btn-reservar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 25px 0 rgba(102, 126, 234, 0.6);
+        color: white;
+    }
+
+    .reserva-info {
+        background: rgba(245, 87, 108, 0.1);
+        border-radius: 10px;
+        padding: 0.8rem;
+        margin-top: 1rem;
+        font-size: 0.85rem;
+        color: #4a5568;
+    }
+
+    .reserva-info strong {
+        color: #f5576c;
+    }
+
+    @media (max-width: 768px) {
+        .salas-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1><i class="bi bi-door-open"></i> Salas Disponibles</h1>
+    <p>Selecciona y reserva la sala que necesites</p>
+</div>
+
+<div class="salas-grid">
+  {% for sala in salas %}
+    <div class="sala-card">
+        <div class="sala-icon">
+            <i class="bi bi-building"></i>
+        </div>
+        
+        <h3>
+            <a href="{% url 'salas:detalle' sala.pk %}" style="text-decoration: none; color: inherit;">
+                {{ sala.nombre }}
+            </a>
+        </h3>
+
+        <div class="sala-info">
+            <div class="info-item">
+                <i class="bi bi-people"></i>
+                <span>Capacidad: <strong>{{ sala.capacidad }} personas</strong></span>
+            </div>
+            
+            <div class="info-item">
+                <i class="bi bi-check-circle"></i>
+                <span>{{ sala.habilitada|yesno:"Habilitada,Deshabilitada" }}</span>
+            </div>
+        </div>
+
+        {% if sala.disponible %}
+            <span class="status-badge status-disponible">
+                <i class="bi bi-check-circle-fill"></i>
+                Disponible Ahora
+            </span>
+            <a href="{% url 'salas:crear_reserva' %}?sala={{ sala.pk }}" class="btn-reservar">
+                <i class="bi bi-calendar-plus"></i> Reservar Sala
+            </a>
+        {% else %}
+            <span class="status-badge status-reservada">
+                <i class="bi bi-lock-fill"></i>
+                Reservada
+            </span>
+            {% with r=sala.reserva_activa %}
+                {% if r %}
+                    <div class="reserva-info">
+                        <strong><i class="bi bi-clock"></i> Reservada:</strong><br>
+                        {{ r.fecha_inicio|date:"d/m/Y H:i" }} → {{ r.fecha_termino|date:"d/m/Y H:i" }}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Animación de entrada escalonada para las cards
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.sala-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>
+{% endblock %}

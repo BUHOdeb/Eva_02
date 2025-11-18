@@ -1,0 +1,353 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<style>
+    .reserva-container {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .form-header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    }
+
+    .form-header h2 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-header p {
+        color: #718096;
+        font-size: 1.1rem;
+    }
+
+    .form-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2.5rem;
+        color: white;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+    }
+
+    .form-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    }
+
+    .sala-info-box {
+        background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
+        border: 2px solid rgba(79, 172, 254, 0.3);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .sala-info-box i {
+        font-size: 2rem;
+        color: #4facfe;
+    }
+
+    .sala-info-box .info {
+        flex: 1;
+    }
+
+    .sala-info-box .title {
+        font-weight: 700;
+        color: #2d3748;
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .sala-info-box .detail {
+        color: #718096;
+        font-size: 0.95rem;
+    }
+
+    .info-alert {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        border: 2px solid rgba(102, 126, 234, 0.3);
+        border-radius: 15px;
+        padding: 1.2rem;
+        margin-bottom: 2rem;
+        color: #667eea;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .info-alert i {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .error-alert {
+        background: linear-gradient(135deg, rgba(245, 87, 108, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%);
+        border: 2px solid rgba(245, 87, 108, 0.3);
+        border-radius: 15px;
+        padding: 1.2rem;
+        margin-bottom: 2rem;
+        color: #f5576c;
+        font-weight: 500;
+    }
+
+    .form-group {
+        margin-bottom: 2rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.8rem;
+        font-size: 1rem;
+    }
+
+    .form-group label i {
+        color: #667eea;
+        margin-right: 0.5rem;
+    }
+
+    .form-control, .form-select {
+        width: 100%;
+        padding: 1rem 1.2rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .form-control:focus, .form-select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-help {
+        display: block;
+        margin-top: 0.5rem;
+        color: #718096;
+        font-size: 0.9rem;
+    }
+
+    .form-help i {
+        margin-right: 0.3rem;
+    }
+
+    .error-text {
+        color: #f5576c;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        display: block;
+    }
+
+    .btn-submit {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 1.2rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px 0 rgba(102, 126, 234, 0.4);
+        cursor: pointer;
+        margin-top: 1rem;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px 0 rgba(102, 126, 234, 0.6);
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+
+    .btn-cancelar {
+        width: 100%;
+        background: transparent;
+        border: 2px solid #e2e8f0;
+        color: #718096;
+        padding: 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        margin-top: 1rem;
+        text-decoration: none;
+        display: block;
+        text-align: center;
+    }
+
+    .btn-cancelar:hover {
+        background: #f7fafc;
+        border-color: #cbd5e0;
+        color: #4a5568;
+    }
+
+    /* Animación del formulario */
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .form-group {
+        animation: slideInRight 0.5s ease-out;
+    }
+
+    .form-group:nth-child(1) { animation-delay: 0.1s; opacity: 0; animation-fill-mode: forwards; }
+    .form-group:nth-child(2) { animation-delay: 0.2s; opacity: 0; animation-fill-mode: forwards; }
+    .form-group:nth-child(3) { animation-delay: 0.3s; opacity: 0; animation-fill-mode: forwards; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="reserva-container">
+
+    <div class="form-header">
+        <div class="form-icon">
+            <i class="bi bi-calendar-plus"></i>
+        </div>
+        <h2>Reservar Sala</h2>
+        <p>La reserva será por 2 horas automáticamente</p>
+    </div>
+
+    <!-- INFORMACIÓN IMPORTANTE -->
+    <div class="info-alert">
+        <i class="bi bi-clock-history"></i>
+        <strong>Duración Automática:</strong> Tu reserva iniciará ahora y terminará en 2 horas
+    </div>
+
+    <!-- ERRORES GENERALES -->
+    {% if form.non_field_errors %}
+        <div class="error-alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <!-- INFO SALA SELECCIONADA -->
+    {% if sala_seleccionada %}
+        <div class="sala-info-box">
+            <i class="bi bi-building"></i>
+            <div class="info">
+                <div class="title">Sala Seleccionada</div>
+                <div class="detail">{{ sala_seleccionada.nombre }} - Capacidad: {{ sala_seleccionada.capacidad }} personas</div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="form-card">
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- RUT -->
+            <div class="form-group">
+                <label>
+                    <i class="bi bi-person-badge"></i>
+                    RUT del Solicitante
+                </label>
+                {{ form.rut }}
+                <small class="form-help">
+                    <i class="bi bi-info-circle"></i>
+                    Ingresa tu RUT sin puntos y con guión (Ej: 12345678-9)
+                </small>
+                {% if form.rut.errors %}
+                    <span class="error-text">
+                        <i class="bi bi-exclamation-circle"></i>
+                        {{ form.rut.errors }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- SALA -->
+            <div class="form-group">
+                <label>
+                    <i class="bi bi-door-open"></i>
+                    Sala a Reservar
+                </label>
+                {{ form.sala }}
+                <small class="form-help">
+                    <i class="bi bi-info-circle"></i>
+                    Selecciona la sala que deseas reservar
+                </small>
+                {% if form.sala.errors %}
+                    <span class="error-text">
+                        <i class="bi bi-exclamation-circle"></i>
+                        {{ form.sala.errors }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- BOTONES -->
+            <button class="btn-submit" type="submit">
+                <i class="bi bi-check-circle"></i> Confirmar Reserva (2 horas)
+            </button>
+
+            <a href="/" class="btn-cancelar">
+                <i class="bi bi-x-circle"></i> Cancelar
+            </a>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Mejorar la experiencia del formulario
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('.form-control, .form-select');
+        
+        inputs.forEach(input => {
+            // Efecto focus
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateX(5px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Animación del botón submit
+        const submitBtn = document.querySelector('.btn-submit');
+        submitBtn.addEventListener('click', function(e) {
+            if (this.closest('form').checkValidity()) {
+                this.innerHTML = '<i class="bi bi-hourglass-split"></i> Creando reserva...';
+                this.disabled = true;
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -7,6 +7,26 @@
         margin: 0 auto;
     }
 
+    .messages {
+        margin-bottom: 2rem;
+    }
+
+    .alert {
+        padding: 1.5rem;
+        border-radius: 15px;
+        margin-bottom: 1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, rgba(79, 172, 254, 0.15) 0%, rgba(0, 242, 254, 0.15) 100%);
+        border: 2px solid rgba(79, 172, 254, 0.4);
+        color: #0088cc;
+    }
+
     .sala-header {
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
@@ -198,6 +218,19 @@
 
 <div class="detalle-container">
     
+    <!-- MENSAJES DE ÉXITO -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- HEADER DE LA SALA -->
     <div class="sala-header">
         <div class="sala-icon-large">
             <i class="bi bi-building"></i>
@@ -213,20 +246,33 @@
             </div>
             
             <div class="info-box">
-                <i class="bi bi-check-circle"></i>
-                <div class="label">Estado</div>
+                <i class="bi bi-toggle-on"></i>
+                <div class="label">Estado Admin</div>
                 <div class="value">{{ sala.habilitada|yesno:"Habilitada,Deshabilitada" }}</div>
+            </div>
+
+            <div class="info-box">
+                <i class="bi bi-door-open"></i>
+                <div class="label">Disponibilidad</div>
+                <div class="value">{{ sala.disponible|yesno:"Libre,Ocupada" }}</div>
             </div>
         </div>
     </div>
 
+    <!-- ESTADO DE LA SALA -->
     <div class="estado-card">
         {% if reserva_activa %}
+            <!-- SALA RESERVADA -->
             <div class="estado-reservada">
                 <i class="bi bi-lock-fill"></i>
                 <h3>Sala Reservada</h3>
+                <p>Esta sala está ocupada en este momento</p>
                 
                 <div class="reserva-detalles">
+                    <div class="item">
+                        <span><i class="bi bi-person-badge"></i> RUT:</span>
+                        <strong>{{ reserva_activa.rut }}</strong>
+                    </div>
                     <div class="item">
                         <span><i class="bi bi-calendar-check"></i> Inicio:</span>
                         <strong>{{ reserva_activa.fecha_inicio|date:"d/m/Y H:i" }}</strong>
@@ -235,21 +281,34 @@
                         <span><i class="bi bi-calendar-x"></i> Término:</span>
                         <strong>{{ reserva_activa.fecha_termino|date:"d/m/Y H:i" }}</strong>
                     </div>
+                    <div class="item">
+                        <span><i class="bi bi-clock"></i> Disponible a las:</span>
+                        <strong>{{ reserva_activa.fecha_termino|date:"H:i" }} hrs</strong>
+                    </div>
                 </div>
             </div>
         {% else %}
+            <!-- SALA DISPONIBLE -->
             <div class="estado-disponible">
                 <i class="bi bi-check-circle-fill"></i>
                 <h3>¡Sala Disponible!</h3>
-                <p>Puedes reservar esta sala ahora mismo</p>
+                <p>Puedes reservar esta sala ahora mismo por 2 horas</p>
                 
-                <a href="{% url 'salas:crear_reserva' %}?sala={{ sala.pk }}" class="btn-reservar-grande">
-                    <i class="bi bi-calendar-plus"></i> Reservar Ahora
-                </a>
+                {% if sala.habilitada %}
+                    <a href="{% url 'salas:crear_reserva' %}?sala={{ sala.pk }}" class="btn-reservar-grande">
+                        <i class="bi bi-calendar-plus"></i> Reservar Ahora (2 horas)
+                    </a>
+                {% else %}
+                    <p style="margin-top: 1rem; opacity: 0.8;">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Esta sala está deshabilitada por el administrador
+                    </p>
+                {% endif %}
             </div>
         {% endif %}
     </div>
 
+    <!-- BOTÓN VOLVER -->
     <div style="text-align: center;">
         <a href="/" class="btn-volver">
             <i class="bi bi-arrow-left"></i> Volver a Salas

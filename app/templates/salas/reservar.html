@@ -233,6 +233,7 @@
 
 <div class="reserva-container">
 
+    <!-- HEADER -->
     <div class="form-header">
         <div class="form-icon">
             <i class="bi bi-calendar-plus"></i>
@@ -241,81 +242,52 @@
         <p>La reserva será por 2 horas automáticamente</p>
     </div>
 
-    <!-- INFORMACIÓN IMPORTANTE -->
-    <div class="info-alert">
-        <i class="bi bi-clock-history"></i>
-        <strong>Duración Automática:</strong> Tu reserva iniciará ahora y terminará en 2 horas
+    <!-- ERRORES -->
+    {% if form.errors %}
+    <div class="error-alert">
+        <ul>
+        {% for field in form %}
+            {% for error in field.errors %}
+                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
     </div>
-
-    <!-- ERRORES GENERALES -->
-    {% if form.non_field_errors %}
-        <div class="error-alert">
-            <i class="bi bi-exclamation-triangle"></i>
-            {{ form.non_field_errors }}
-        </div>
     {% endif %}
 
-    <!-- INFO SALA SELECCIONADA -->
-    {% if sala_seleccionada %}
-        <div class="sala-info-box">
-            <i class="bi bi-building"></i>
-            <div class="info">
-                <div class="title">Sala Seleccionada</div>
-                <div class="detail">{{ sala_seleccionada.nombre }} - Capacidad: {{ sala_seleccionada.capacidad }} personas</div>
-            </div>
-        </div>
-    {% endif %}
-
+    <!-- FORMULARIO -->
     <div class="form-card">
-        <form method="POST">
+        <form method="POST" action="{% url 'salas:crear_reserva' %}">
             {% csrf_token %}
+
+            <!-- SALA (FIJA O SELECCIONABLE) -->
+            {% if sala_seleccionada %}
+                <input type="hidden" name="sala" value="{{ sala_seleccionada.pk }}">
+                <div class="form-group">
+                    <label>Sala a Reservar</label>
+                    <input type="text" class="form-control" value="{{ sala_seleccionada.nombre }}" disabled>
+                </div>
+            {% else %}
+                <div class="form-group">
+                    <label>Sala a Reservar</label>
+                    {{ form.sala }}
+                </div>
+            {% endif %}
 
             <!-- RUT -->
             <div class="form-group">
-                <label>
-                    <i class="bi bi-person-badge"></i>
-                    RUT del Solicitante
-                </label>
+                <label>RUT del Solicitante</label>
                 {{ form.rut }}
-                <small class="form-help">
-                    <i class="bi bi-info-circle"></i>
-                    Ingresa tu RUT sin puntos y con guión (Ej: 12345678-9)
-                </small>
-                {% if form.rut.errors %}
-                    <span class="error-text">
-                        <i class="bi bi-exclamation-circle"></i>
-                        {{ form.rut.errors }}
-                    </span>
-                {% endif %}
             </div>
 
-            <!-- SALA -->
-            <div class="form-group">
-                <label>
-                    <i class="bi bi-door-open"></i>
-                    Sala a Reservar
-                </label>
-                {{ form.sala }}
-                <small class="form-help">
-                    <i class="bi bi-info-circle"></i>
-                    Selecciona la sala que deseas reservar
-                </small>
-                {% if form.sala.errors %}
-                    <span class="error-text">
-                        <i class="bi bi-exclamation-circle"></i>
-                        {{ form.sala.errors }}
-                    </span>
-                {% endif %}
-            </div>
-
-            <!-- BOTONES -->
-            <button class="btn-submit" type="submit">
-                <i class="bi bi-check-circle"></i> Confirmar Reserva (2 horas)
+            <button type="submit" class="btn-submit">
+                Confirmar Reserva (2 horas)
             </button>
 
-            <a href="/" class="btn-cancelar">
-                <i class="bi bi-x-circle"></i> Cancelar
-            </a>
+            <a href="/" class="btn-cancelar">Cancelar</a>
         </form>
     </div>
 
@@ -325,22 +297,7 @@
 
 {% block extra_js %}
 <script>
-    // Mejorar la experiencia del formulario
     document.addEventListener('DOMContentLoaded', function() {
-        const inputs = document.querySelectorAll('.form-control, .form-select');
-        
-        inputs.forEach(input => {
-            // Efecto focus
-            input.addEventListener('focus', function() {
-                this.parentElement.style.transform = 'translateX(5px)';
-            });
-            
-            input.addEventListener('blur', function() {
-                this.parentElement.style.transform = 'translateX(0)';
-            });
-        });
-
-        // Animación del botón submit
         const submitBtn = document.querySelector('.btn-submit');
         submitBtn.addEventListener('click', function(e) {
             if (this.closest('form').checkValidity()) {

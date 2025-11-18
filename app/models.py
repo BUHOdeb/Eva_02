@@ -28,7 +28,7 @@ class Sala(models.Model):
     def disponible(self):
         """Verifica si la sala está disponible para reservar"""
         return self.habilitada and self.reserva_activa is None
-
+    
 
 class Reserva(models.Model):
     rut = models.CharField(max_length=20)

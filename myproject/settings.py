@@ -67,7 +67,6 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -97,14 +96,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
+# Internationalization - CONFIGURACIÓN PARA CHILE
 LANGUAGE_CODE = 'es-cl'
 
+# CRÍTICO: Zona horaria de Chile
 TIME_ZONE = 'America/Santiago'
 
+# Usar zonas horarias conscientes (timezone-aware datetimes)
 USE_I18N = True
-
-USE_TZ = True
+USE_TZ = True  # MUY IMPORTANTE: Debe estar en True
 
 
 # Static files (CSS, JavaScript, Images)

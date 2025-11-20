@@ -1,323 +1,881 @@
-/* ============================================================
-   SISTEMA DE RESERVAS ITID — ESTILO AWS
-   Archivo único de estilos
-   (Nav, Cards, Formularios, Listados, Detalles, Botones)
-============================================================ */
+/* ============================================
+   ITID - Sistema de Reservas de Salas
+   Stylesheet Principal
+   ============================================ */
 
-/* GENERAL */
-body {
-    background: #F8FAFC;
-    font-family: "Inter", "Segoe UI", Arial, sans-serif;
-    color: #1A1A1A;
+/* === VARIABLES CSS === */
+:root {
+    /* Colores principales */
+    --primary-color: #667eea;
+    --primary-dark: #5568d3;
+    --secondary-color: #764ba2;
+    --accent-color: #4facfe;
+    --accent-light: #00f2fe;
+    
+    /* Estados */
+    --success-color: #4facfe;
+    --danger-color: #f5576c;
+    --warning-color: #ffa726;
+    --info-color: #667eea;
+    
+    /* Gradientes */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --gradient-danger: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    
+    /* Fondos */
+    --bg-glass: rgba(255, 255, 255, 0.95);
+    --bg-glass-dark: rgba(255, 255, 255, 0.1);
+    
+    /* Sombras */
+    --shadow-sm: 0 2px 8px rgba(31, 38, 135, 0.15);
+    --shadow-md: 0 8px 32px rgba(31, 38, 135, 0.37);
+    --shadow-lg: 0 15px 40px rgba(31, 38, 135, 0.5);
+    --shadow-xl: 0 20px 60px rgba(31, 38, 135, 0.6);
+    
+    /* Espaciados */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    
+    /* Border radius */
+    --radius-sm: 10px;
+    --radius-md: 15px;
+    --radius-lg: 20px;
+    --radius-full: 50px;
+    
+    /* Transiciones */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* === RESET Y BASE === */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-.animate-in {
-    animation: fadein .4s ease-out forwards;
-    opacity: 0;
+body {
+    background: var(--gradient-primary);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+    overflow-x: hidden;
 }
 
-@keyframes fadein {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
+/* Efecto de fondo animado */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(252, 70, 107, 0.3), transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+    animation: backgroundPulse 15s ease-in-out infinite;
 }
 
-/* ============================================================
-   NAVBAR
-============================================================ */
+@keyframes backgroundPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+.container {
+    position: relative;
+    z-index: 10;
+}
+
+/* === NAVBAR === */
 .navbar {
-    background: #232F3E; /* AWS dark blue */
-    padding: 1rem 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    background: var(--bg-glass-dark) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-md);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    padding: var(--spacing-sm) 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: var(--transition-normal);
+}
+
+.navbar:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
 }
 
 .navbar-brand {
-    font-weight: 700;
-    font-size: 1.3rem;
+    font-weight: 800;
+    font-size: 1.5rem;
     color: white !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: var(--transition-normal);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-.navbar-dark .navbar-nav .nav-link {
-    color: #E5E7EB;
+.navbar-brand:hover {
+    transform: translateY(-2px) scale(1.05);
+    text-shadow: 0 5px 15px rgba(255, 255, 255, 0.5);
+}
+
+.navbar-brand i {
+    margin-right: 0.5rem;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
     font-weight: 500;
-    margin-left: 1rem;
-    transition: 0.2s;
+    margin: 0 var(--spacing-sm);
+    transition: var(--transition-normal);
+    position: relative;
+    padding: 8px 20px !important;
+    border-radius: var(--radius-full);
 }
 
-.navbar-dark .navbar-nav .nav-link:hover {
-    color: #fff;
-    text-shadow: 0 0 6px rgba(255,255,255,0.6);
+.nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: var(--transition-normal);
+    transform: translateX(-50%);
 }
 
-/* ============================================================
-   FOOTER
-============================================================ */
-footer {
-    margin-top: 4rem;
-    background: #111827;
-    padding: 2.5rem 0;
-    text-align: center;
-    color: #9CA3AF;
-}
-
-/* ============================================================
-   BOTONES UNIVERSALES
-============================================================ */
-.btn-submit,
-.btn-reservar,
-.btn-reservar-grande {
-    background: #0073BB;
+.nav-link:hover {
     color: white !important;
-    padding: 0.8rem 1.3rem;
-    border-radius: 8px;
-    font-weight: 600;
-    border: none;
-    display: inline-block;
-    margin-top: 1rem;
-    transition: 0.2s;
-    text-align: center;
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.1);
 }
 
-.btn-submit:hover,
+.nav-link:hover::before {
+    width: 80%;
+}
+
+/* === ANIMACIONES GLOBALES === */
+.animate-in {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === PÁGINA PRINCIPAL === */
+.page-header {
+    text-align: center;
+    color: white;
+    margin-bottom: var(--spacing-xl);
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.page-header h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: var(--spacing-sm);
+    text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: titleGlow 2s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+    0%, 100% { text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+    50% { text-shadow: 0 5px 25px rgba(255, 255, 255, 0.4); }
+}
+
+.page-header p {
+    font-size: 1.2rem;
+    opacity: 0.95;
+}
+
+/* === GRID DE SALAS === */
+.salas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.sala-card {
+    background: var(--bg-glass);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    animation: cardSlideIn 0.5s ease-out backwards;
+}
+
+.sala-card:nth-child(1) { animation-delay: 0.1s; }
+.sala-card:nth-child(2) { animation-delay: 0.2s; }
+.sala-card:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes cardSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sala-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: var(--gradient-primary);
+    transform: scaleX(0);
+    transition: var(--transition-normal);
+}
+
+.sala-card:hover::before {
+    transform: scaleX(1);
+}
+
+.sala-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: var(--shadow-xl);
+}
+
+.sala-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-md);
+    font-size: 1.8rem;
+    color: white;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.sala-card h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: var(--spacing-sm);
+    transition: var(--transition-normal);
+}
+
+.sala-card h3:hover {
+    color: var(--primary-color);
+}
+
+.sala-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4a5568;
+    font-size: 0.95rem;
+    transition: var(--transition-fast);
+}
+
+.info-item:hover {
+    transform: translateX(5px);
+}
+
+.info-item i {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+/* === BADGES DE ESTADO === */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem var(--spacing-sm);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-sm);
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.status-disponible {
+    background: var(--gradient-success);
+    color: white;
+    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+}
+
+.status-reservada {
+    background: var(--gradient-danger);
+    color: white;
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+}
+
+/* === BOTONES === */
+.btn-reservar,
+.btn-reservar-grande,
+.btn-submit {
+    width: 100%;
+    background: var(--gradient-primary);
+    border: none;
+    color: white;
+    padding: 12px;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    transition: var(--transition-normal);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-reservar::before,
+.btn-reservar-grande::before,
+.btn-submit::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-reservar:hover::before,
+.btn-reservar-grande:hover::before,
+.btn-submit:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
 .btn-reservar:hover,
-.btn-reservar-grande:hover {
-    background: #005E99;
-    transform: translateY(-2px);
+.btn-reservar-grande:hover,
+.btn-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+    color: white;
+}
+
+.btn-reservar:active,
+.btn-reservar-grande:active,
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+.btn-submit {
+    font-size: 1.1rem;
+    padding: 1.2rem;
+    margin-top: var(--spacing-sm);
 }
 
 .btn-cancelar,
 .btn-volver {
+    width: 100%;
+    background: transparent;
+    border: 2px solid #e2e8f0;
+    color: #718096;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    transition: var(--transition-normal);
+    cursor: pointer;
+    margin-top: var(--spacing-sm);
+    text-decoration: none;
     display: inline-block;
-    margin-top: 1rem;
-    padding: 0.7rem 1.1rem;
-    border-radius: 8px;
-    background: #374151;
-    color: white !important;
-    font-weight: 500;
-    transition: 0.2s;
+    text-align: center;
+}
+
+.btn-volver {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: white;
 }
 
 .btn-cancelar:hover,
 .btn-volver:hover {
-    background: #1F2937;
-}
-
-/* ============================================================
-   CARDS GENERALES
-============================================================ */
-.sala-card,
-.estado-card,
-.form-card,
-.detalle-container,
-.sala-header {
     background: white;
-    border-radius: 12px;
-    padding: 1.8rem;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-    margin-bottom: 2rem;
+    color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
-/* ============================================================
-   LISTADO DE SALAS
-============================================================ */
+/* === INFO DE RESERVA === */
+.reserva-info {
+    background: rgba(245, 87, 108, 0.1);
+    border-radius: var(--radius-sm);
+    padding: 0.8rem;
+    margin-top: var(--spacing-sm);
+    font-size: 0.85rem;
+    color: #4a5568;
+    border-left: 4px solid var(--danger-color);
+    animation: slideIn 0.5s ease-out;
+}
 
-.page-header {
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.reserva-info strong {
+    color: var(--danger-color);
+}
+
+/* === PÁGINA DE DETALLE === */
+.detalle-container {
+    max-width: 800px;
+    margin: 0 auto;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.sala-header {
+    background: var(--bg-glass);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-md);
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: var(--spacing-lg);
+    animation: zoomIn 0.5s ease-out;
 }
 
-.page-header h1 {
-    font-weight: 800;
-    color: #1F2937;
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
-.page-header p {
-    color: #6B7280;
-}
-
-.salas-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px,1fr));
-    gap: 2rem;
-}
-
-/* Cards */
-.sala-card h3 {
-    margin-top: 1rem;
-    font-size: 1.3rem;
-    font-weight: 700;
-}
-
-.sala-icon {
-    font-size: 2.5rem;
-    color: #0073BB;
-}
-
-.sala-info .info-item {
+.sala-icon-large {
+    width: 100px;
+    height: 100px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin: 0.4rem 0;
-    color: #374151;
+    justify-content: center;
+    margin: 0 auto var(--spacing-lg);
+    font-size: 3rem;
+    color: white;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+    animation: pulse 2s infinite;
 }
 
-/* Badges */
-.status-badge {
-    display: inline-block;
-    padding: 0.45rem 0.7rem;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin: 1rem 0;
-}
-
-.status-disponible {
-    background: #D1FAE5;
-    color: #065F46;
-}
-
-.status-reservada {
-    background: #FECACA;
-    color: #991B1B;
-}
-
-/* Reserva Info */
-.reserva-info {
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
-    color: #444;
-}
-
-/* ============================================================
-   DETALLE DE SALA
-============================================================ */
-
-.detalle-container {
-    max-width: 900px;
-    margin: auto;
-}
-
-.sala-header {
-    text-align: center;
+@keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5); }
+    50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(102, 126, 234, 0.7); }
 }
 
 .sala-nombre {
-    font-size: 2.2rem;
+    font-size: 2.5rem;
     font-weight: 800;
-    color: #1F2937;
+    color: #2d3748;
+    margin-bottom: var(--spacing-sm);
 }
 
 .info-grid {
-    margin-top: 2rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
 }
 
 .info-box {
-    background: #F3F4F6;
-    padding: 1rem;
-    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
     text-align: center;
-    font-weight: 600;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    transition: var(--transition-normal);
+}
+
+.info-box:hover {
+    transform: translateY(-5px);
+    border-color: rgba(102, 126, 234, 0.5);
+    box-shadow: var(--shadow-sm);
+}
+
+.info-box i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
 }
 
 .info-box .label {
-    color: #6B7280;
-    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    color: #718096;
+    margin-bottom: 0.5rem;
 }
 
-/* Estado */
-.estado-disponible {
+.info-box .value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+/* === ESTADOS DE SALA === */
+.estado-card {
+    background: var(--bg-glass);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    animation: fadeInUp 0.7s ease-out 0.2s backwards;
+}
+
+.estado-disponible,
+.estado-reservada {
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
     text-align: center;
-    padding: 1.5rem;
-    color: #047857;
+    color: white;
+    animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.estado-disponible {
+    background: var(--gradient-success);
+    margin-bottom: var(--spacing-md);
 }
 
 .estado-reservada {
-    text-align: center;
-    padding: 1.5rem;
-    color: #991B1B;
+    background: var(--gradient-danger);
+}
+
+.estado-disponible h3,
+.estado-reservada h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
 }
 
 .estado-disponible i,
 .estado-reservada i {
-    font-size: 2.5rem;
+    font-size: 3rem;
+    margin-bottom: var(--spacing-sm);
+    animation: iconBounce 2s ease-in-out infinite;
 }
 
-/* ============================================================
-   FORMULARIO RESERVA
-============================================================ */
+@keyframes iconBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
 
+.reserva-detalles {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.reserva-detalles .item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    transition: var(--transition-fast);
+}
+
+.reserva-detalles .item:hover {
+    padding-left: var(--spacing-xs);
+}
+
+.reserva-detalles .item:last-child {
+    border-bottom: none;
+}
+
+/* === FORMULARIO DE RESERVA === */
 .reserva-container {
-    max-width: 650px;
-    margin: auto;
+    max-width: 700px;
+    margin: 0 auto;
+    animation: fadeInUp 0.6s ease-out;
 }
 
 .form-header {
+    background: var(--bg-glass);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
 }
 
 .form-icon {
-    font-size: 3rem;
-    color: #0073BB;
+    width: 80px;
+    height: 80px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md);
+    font-size: 2.5rem;
+    color: white;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+    animation: pulse 2s infinite;
 }
 
 .form-header h2 {
+    font-size: 2.2rem;
     font-weight: 800;
-    margin-top: 1rem;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+}
+
+.form-header p {
+    color: #718096;
+    font-size: 1.1rem;
 }
 
 .form-card {
-    padding: 2rem;
+    background: var(--bg-glass);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
 }
 
 .form-group {
-    margin-bottom: 1.3rem;
+    margin-bottom: var(--spacing-lg);
+    animation: slideInRight 0.5s ease-out backwards;
 }
 
-/* Inputs */
-.form-control,
-select {
-    width: 100%;
-    padding: 0.7rem 1rem;
-    border-radius: 8px;
-    border: 1px solid #CBD5E1;
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.8rem;
     font-size: 1rem;
-    transition: 0.2s;
+}
+
+.form-group label i {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+.form-control,
+.form-select {
+    width: 100%;
+    padding: var(--spacing-sm) 1.2rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: var(--transition-normal);
     background: white;
 }
 
 .form-control:focus,
-select:focus {
-    border-color: #0073BB;
-    box-shadow: 0 0 0 3px rgba(0,115,187,0.15);
+.form-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
 }
 
-/* Errores */
-.error-alert {
-    background: #FEE2E2;
-    border-left: 4px solid #DC2626;
-    padding: 1rem 1.3rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+/* === MENSAJES Y ALERTAS === */
+.messages {
+    margin-bottom: var(--spacing-lg);
+    animation: slideInDown 0.5s ease-out;
 }
 
-/* Mensajes Django */
-.messages .alert {
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-weight: 600;
+    animation: alertSlide 0.5s ease-out;
+}
+
+@keyframes alertSlide {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .alert-success {
-    background: #DCFCE7;
-    color: #14532D;
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.15) 0%, rgba(0, 242, 254, 0.15) 100%);
+    border: 2px solid rgba(79, 172, 254, 0.4);
+    color: #0088cc;
 }
 
-.alert-error {
-    background: #FECACA;
-    color: #991B1B;
+.error-alert {
+    background: linear-gradient(135deg, rgba(245, 87, 108, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%);
+    border: 2px solid rgba(245, 87, 108, 0.3);
+    border-radius: var(--radius-md);
+    padding: 1.2rem;
+    margin-bottom: var(--spacing-lg);
+    color: var(--danger-color);
+    font-weight: 500;
+}
+
+.error-alert ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.error-alert li {
+    margin-bottom: 0.5rem;
+}
+
+/* === FOOTER === */
+footer {
+    position: relative;
+    z-index: 10;
+    margin-top: 60px;
+    padding: 30px 0;
+    background: var(--bg-glass-dark);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    text-align: center;
+    color: white;
+    font-weight: 500;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .salas-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .sala-nombre {
+        font-size: 2rem;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* === UTILIDADES === */
+.text-center {
+    text-align: center;
+}
+
+.mt-2 { margin-top: var(--spacing-lg); }
+.mb-2 { margin-bottom: var(--spacing-lg); }
+
+/* === SCROLLBAR PERSONALIZADA === */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-primary);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
 }

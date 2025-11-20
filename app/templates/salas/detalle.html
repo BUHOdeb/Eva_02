@@ -6,7 +6,7 @@
 
 <div class="detalle-container">
     
-    <!-- MENSAJES DE ÉXITO -->
+    <!-- Condicional en caso de exito-->
     {% if messages %}
     <div class="messages">
         {% for message in messages %}
@@ -18,12 +18,12 @@
     </div>
     {% endif %}
 
-    <!-- HEADER DE LA SALA -->
+    <!-- Estructura de la card mostrada en la sala-->
     <div class="sala-header">
         <div class="sala-icon-large">
             <i class="bi bi-building"></i>
         </div>
-        
+        Detalles de la {{sala.nombre}}
         <h1 class="sala-nombre">{{ sala.nombre }}</h1>
         
         <div class="info-grid">
